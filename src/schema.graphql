@@ -1,0 +1,140 @@
+enum ACTIONS {
+  EDIT
+  DELETE
+}
+
+type FullPost {
+  post: Post!
+  files: [File!]!
+  comments: [Comment!]!
+  likeCount: Int!
+  user: User!
+}
+
+type Query {
+  allUsers: [User!]!
+  userById(id: String!): User!
+  searchUser(term: String!): [User!]!
+  searchPost(term: String!): [Post!]!
+  seeUser(id: String!): UserProfile!
+  me: UserProfile!
+  seeFullPost(id: String!): Post!
+  seeFeed: [Post!]!
+  seeRooms: [Room!]!
+  seeRoom(id: String!): Room!
+}
+
+type Mutation {
+  createAccount(
+    username: String!
+    email: String!
+    firstName: String
+    lastName: String
+    bio: String
+  ): User!
+  requestSecret(email: String!): Boolean!
+  confirmSecret(secret: String!, email: String!): String!
+  toggleLike(postId: String!): Boolean!
+  addComment(text: String!, postId: String!): Comment!
+  follow(id: String!): Boolean
+  unfollow(id: String!): Boolean
+  editUser(
+    username: String
+    email: String
+    firstName: String
+    lastName: String
+    bio: String
+    avatar: String
+  ): User!
+  upload(caption: String!, files: [String!]!): Post!
+  editPost(
+    id: String!
+    caption: String
+    location: String
+    action: ACTIONS!
+  ): Post!
+  sendMessage(roomId: String, message: String!, toId: String): Message
+}
+
+type Subscription {
+  newMessage(roomId: String!): Message
+}
+
+type User {
+  id: ID!
+  avatar: String
+  username: String!
+  email: String!
+  firstName: String
+  lastName: String
+  fullName: String
+  isFollowing: Boolean!
+  isSelf: Boolean!
+  bio: String
+  following: [User!]!
+  followers: [User!]!
+  posts: [Post!]!
+  likes: [Like!]!
+  comments: [Comment!]!
+  rooms: [Room!]!
+  loginSecret: String!
+  createdAt: String
+  updatedAt: String
+}
+type Post {
+  id: ID!
+  location: String
+  caption: String!
+  user: User!
+  files: [File!]!
+  likes: [Like!]!
+  comments: [Comment!]!
+  isLiked: Boolean!
+  likeCount: Int
+  createdAt: String
+  updatedAt: String
+}
+type Like {
+  id: ID!
+  user: User!
+  post: Post!
+  createdAt: String
+  updatedAt: String
+}
+type Comment {
+  id: ID!
+  text: String!
+  user: User!
+  post: Post!
+  createdAt: String
+  updatedAt: String
+}
+type File {
+  id: ID!
+  url: String!
+  post: Post!
+  createdAt: String
+  updatedAt: String
+}
+type Room {
+  id: ID!
+  participants: [User!]!
+  messages: [Message!]!
+  createdAt: String
+  updatedAt: String
+}
+type Message {
+  id: ID!
+  text: String!
+  from: User!
+  to: User!
+  room: Room!
+  createdAt: String
+  updatedAt: String
+}
+type UserProfile {
+  user: User!
+  posts: [Post!]!
+  createdAt: String
+  updatedAt: String
+}
